@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Syne", sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --color-meridian-gold: #D4AF37;
+  --color-meridian-black: #0A0A0A;
+  --color-meridian-offwhite: #F5F5F0;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-meridian-black);
+    color: var(--color-meridian-offwhite);
+    font-family: var(--font-serif);
+  }
+  
+  body::selection {
+    background-color: var(--color-meridian-gold);
+    color: var(--color-meridian-black);
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-tighter, -0.05em);
+  }
+}
+
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+/* Hide scrollbar but keep functionality */
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
