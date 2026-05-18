@@ -4,7 +4,15 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useSpring,
+  useMotionValue,
+  useInView,
+  AnimatePresence,
+} from 'motion/react';
 import { InAction } from './components/InAction/InAction';
 import {
   ArrowRight,
@@ -39,6 +47,248 @@ import {
 // Constants
 // ---------------------------------------------------------------------------
 const CONTACT_EMAIL = 'hello@meridian.mu';
+
+// ---------------------------------------------------------------------------
+// UX primitives — scroll progress, spotlight cursor, magnetic CTAs, counters,
+// tilt cards, intro reveal, scroll-spy hook. Aesthetic preserved; interactions
+// upgraded.
+// ---------------------------------------------------------------------------
+
+const ScrollProgress = () => {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 200,
+    damping: 30,
+    restDelta: 0.001,
+  });
+  return (
+    <motion.div
+      aria-hidden
+      style={{ scaleX }}
+      className="fixed top-0 left-0 right-0 h-[2px] bg-meridian-gold origin-left z-[10000]"
+    />
+  );
+};
+
+const CursorSpotlight = () => {
+  const x = useMotionValue(-1000);
+  const y = useMotionValue(-1000);
+  const sx = useSpring(x, { stiffness: 120, damping: 22, mass: 0.6 });
+  const sy = useSpring(y, { stiffness: 120, damping: 22, mass: 0.6 });
+
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      x.set(e.clientX);
+      y.set(e.clientY);
+    };
+    window.addEventListener('mousemove', move);
+    return () => window.removeEventListener('mousemove', move);
+  }, [x, y]);
+
+  return (
+    <motion.div
+      aria-hidden
+      style={{
+        x: sx,
+        y: sy,
+        width: 640,
+        height: 640,
+        marginLeft: -320,
+        marginTop: -320,
+        background:
+          'radial-gradient(circle, rgba(212,175,55,0.08) 0%, rgba(212,175,55,0) 60%)',
+      }}
+      className="fixed left-0 top-0 pointer-events-none z-[9998] hidden md:block"
+    />
+  );
+};
+
+const Magnetic: React.FC<{
+  children: React.ReactNode;
+  strength?: number;
+  className?: string;
+}> = ({ children, strength = 0.25, className = '' }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const sx = useSpring(x, { stiffness: 200, damping: 15, mass: 0.4 });
+  const sy = useSpring(y, { stiffness: 200, damping: 15, mass: 0.4 });
+
+  const onMove = (e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    x.set((e.clientX - (rect.left + rect.width / 2)) * strength);
+    y.set((e.clientY - (rect.top + rect.height / 2)) * strength);
+  };
+  const onLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{ x: sx, y: sy }}
+      className={`inline-block ${className}`}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+const AnimatedCounter: React.FC<{
+  to: number;
+  duration?: number;
+  format?: (n: number) => string;
+  className?: string;
+}> = ({ to, duration = 1.6, format = (n) => Math.round(n).toString(), className }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / (duration * 1000));
+      const eased = 1 - Math.pow(1 - t, 3);
+      setVal(eased * to);
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, to, duration]);
+
+  return (
+    <span ref={ref} className={className}>
+      {format(val)}
+    </span>
+  );
+};
+
+const TiltCard: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  glow?: number;
+  tilt?: number;
+}> = ({ children, className = '', glow = 0.12, tilt = 4 }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const mx = useMotionValue(0.5);
+  const my = useMotionValue(0.5);
+  const rx = useSpring(useTransform(my, [0, 1], [tilt, -tilt]), {
+    stiffness: 250,
+    damping: 20,
+  });
+  const ry = useSpring(useTransform(mx, [0, 1], [-tilt, tilt]), {
+    stiffness: 250,
+    damping: 20,
+  });
+  const [pos, setPos] = useState({ x: 50, y: 50, on: false });
+
+  const onMove = (e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width;
+    const ny = (e.clientY - rect.top) / rect.height;
+    mx.set(nx);
+    my.set(ny);
+    setPos({ x: nx * 100, y: ny * 100, on: true });
+  };
+  const onLeave = () => {
+    mx.set(0.5);
+    my.set(0.5);
+    setPos((p) => ({ ...p, on: false }));
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{
+        rotateX: rx,
+        rotateY: ry,
+        transformPerspective: 1200,
+        transformStyle: 'preserve-3d',
+      }}
+      className={`relative will-change-transform ${className}`}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[inherit] transition-opacity duration-500"
+        style={{
+          opacity: pos.on ? 1 : 0,
+          background: `radial-gradient(420px circle at ${pos.x}% ${pos.y}%, rgba(212,175,55,${glow}), transparent 45%)`,
+        }}
+      />
+      {children}
+    </motion.div>
+  );
+};
+
+const IntroReveal = () => {
+  const [show, setShow] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setShow(false), 1500);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="fixed inset-0 z-[10001] bg-meridian-black flex items-center justify-center"
+        >
+          <div className="flex flex-col items-center gap-6">
+            <motion.span
+              initial={{ opacity: 0, letterSpacing: '0.6em' }}
+              animate={{ opacity: 1, letterSpacing: '0.22em' }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              className="font-display text-xl md:text-2xl text-meridian-gold uppercase"
+            >
+              Meridian
+            </motion.span>
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1.1, ease: 'easeInOut' }}
+              className="h-px w-40 bg-meridian-gold/50 origin-left"
+            />
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const useActiveSection = (ids: string[]) => {
+  const [active, setActive] = useState<string>(ids[0]);
+  useEffect(() => {
+    const handler = () => {
+      const probe = window.innerHeight * 0.35;
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= probe) current = id;
+      }
+      setActive(current);
+    };
+    handler();
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, [ids.join(',')]);
+  return active;
+};
 
 // ---------------------------------------------------------------------------
 // Animated Background — replaces grain overlay
