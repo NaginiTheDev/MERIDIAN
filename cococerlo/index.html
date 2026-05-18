@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COCOCÉRLO — For the bon-vivants</title>
+    <meta
+      name="description"
+      content="COCOCÉRLO — a lifestyle brand designed for the bon-vivants. Men's and women's apparel, crafted in Mauritius."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Italiana&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <a class="brand" href="#">COCOCÉRLO</a>
+      <nav class="nav-links">
+        <a href="#">Men</a>
+        <a href="#">Women</a>
+        <a href="#">Stores</a>
+        <a href="#">Contact</a>
+      </nav>
+      <button class="nav-cta" type="button">Shop</button>
+    </header>
+
+    <section class="hero">
+      <p class="hero-eyebrow">A lifestyle brand · Mauritius</p>
+      <h1 class="hero-title">For the bon-vivants.</h1>
+      <p class="hero-sub">
+        Soft tailoring, easy cuts, lived-in fabrics — built for the long lunches
+        and the slow walks home.
+      </p>
+    </section>
+
+    <!-- ====================================================================
+         CATEGORY ACCORDION
+         Default: icon-only narrow tiles. Hover: tile grows, neighbors shrink
+         within the same total width. Pure CSS flex transition.
+    ===================================================================== -->
+    <section class="cats" aria-label="Shop by category">
+      <p class="cats-label">Shop the collection</p>
+
+      <div class="cats-row" role="list">
+        <article class="tile" data-accent="sand" role="listitem" tabindex="0">
+          <div class="tile-icon" aria-hidden="true">
+            <!-- jacket -->
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M16 8l-9 5 3 12-3 17h11" />
+              <path d="M32 8l9 5-3 12 3 17H30" />
+              <path d="M16 8h16l-2 6-6 4-6-4z" />
+              <path d="M24 18v24" />
+            </svg>
+          </div>
+          <span class="tile-vlabel">Jackets</span>
+          <div class="tile-panel">
+            <span class="tile-num">01</span>
+            <h3>Jackets</h3>
+            <p>Leather. Linen. Light layers for the evening drop.</p>
+            <a href="#" class="tile-cta">Shop Jackets <span>→</span></a>
+          </div>
+        </article>
+
+        <article class="tile" data-accent="bone" role="listitem" tabindex="0">
+          <div class="tile-icon" aria-hidden="true">
+            <!-- hoodie -->
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M14 12c2-4 6-6 10-6s8 2 10 6" />
+              <path d="M8 22l6-10 8 4 8-4 6 10-6 4-2 16H16l-2-16-6-4z" />
+              <path d="M22 16h4v6h-4z" />
+            </svg>
+          </div>
+          <span class="tile-vlabel">Hoodies</span>
+          <div class="tile-panel">
+            <span class="tile-num">02</span>
+            <h3>Hoodies</h3>
+            <p>Heavyweight cotton, soft inside, cut to drape.</p>
+            <a href="#" class="tile-cta">Shop Hoodies <span>→</span></a>
+          </div>
+        </article>
+
+        <article class="tile" data-accent="olive" role="listitem" tabindex="0">
+          <div class="tile-icon" aria-hidden="true">
+            <!-- tee -->
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M14 10l-7 6 4 6 5-3v23h20V19l5 3 4-6-7-6-7 3h-10z" />
+            </svg>
+          </div>
+          <span class="tile-vlabel">Graphic Tees</span>
+          <div class="tile-panel">
+            <span class="tile-num">03</span>
+            <h3>Graphic Tees</h3>
+            <p>House prints, archive marks, garment-dyed cotton.</p>
+            <a href="#" class="tile-cta">Shop Tees <span>→</span></a>
+          </div>
+        </article>
+
+        <article class="tile" data-accent="ink" role="listitem" tabindex="0">
+          <div class="tile-icon" aria-hidden="true">
+            <!-- shirt -->
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M14 8l-6 4 4 8 4-2v24h20V18l4 2 4-8-6-4-6 4h-8z" />
+              <path d="M24 12v8" />
+            </svg>
+          </div>
+          <span class="tile-vlabel">Shirts</span>
+          <div class="tile-panel">
+            <span class="tile-num">04</span>
+            <h3>Shirts</h3>
+            <p>Linen, poplin, Cuban collars and resort cuts.</p>
+            <a href="#" class="tile-cta">Shop Shirts <span>→</span></a>
+          </div>
+        </article>
+
+        <article class="tile" data-accent="terracotta" role="listitem" tabindex="0">
+          <div class="tile-icon" aria-hidden="true">
+            <!-- swim -->
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M10 18h28l-2 16-8 6h-8l-8-6z" />
+              <path d="M24 18v22" />
+              <path d="M14 30c4-2 6 2 10 0s6 2 10 0" />
+            </svg>
+          </div>
+          <span class="tile-vlabel">Swimwear</span>
+          <div class="tile-panel">
+            <span class="tile-num">05</span>
+            <h3>Swimwear</h3>
+            <p>Quick-dry cuts, sun-bleached palette, made for the coast.</p>
+            <a href="#" class="tile-cta">Shop Swim <span>→</span></a>
+          </div>
+        </article>
+
+        <article class="tile" data-accent="taupe" role="listitem" tabindex="0">
+          <div class="tile-icon" aria-hidden="true">
+            <!-- pants -->
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M14 6h20l-2 14-2 22h-6l-2-18-2 18h-6l-2-22z" />
+              <path d="M14 6h20" />
+            </svg>
+          </div>
+          <span class="tile-vlabel">Jeans &amp; Pants</span>
+          <div class="tile-panel">
+            <span class="tile-num">06</span>
+            <h3>Jeans &amp; Pants</h3>
+            <p>Loose fits, wide legs, denim that breaks in slow.</p>
+            <a href="#" class="tile-cta">Shop Pants <span>→</span></a>
+          </div>
+        </article>
+      </div>
+
+      <p class="cats-hint">
+        <span class="cats-hint-dot"></span> Hover a tile to expand
+      </p>
+    </section>
+
+    <footer class="foot">
+      <span>COCOCÉRLO © 2026</span>
+      <span>Crafted in Mauritius</span>
+    </footer>
+  </body>
+</html>
